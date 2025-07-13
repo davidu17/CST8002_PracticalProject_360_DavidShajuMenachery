@@ -2,7 +2,9 @@
 import sys
 import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 from model.record import Record
+from model.display_record import SimpleDisplayRecord, VerboseDisplayRecord
 from persistence.file_io import read_dataset, write_dataset
 from business.manager import RecordManager
 
@@ -15,6 +17,7 @@ def display_menu():
     print("4. Delete Record")
     print("5. Reload Data")
     print("6. Save to File")
+    print("7. Display Using Polymorphic Output")
     print("0. Exit")
 
 def get_record_input():
@@ -57,6 +60,15 @@ def main():
         elif choice == "6":
             filename = write_dataset(manager.get_all())
             print("Data saved to:", filename)
+        elif choice == "7":
+            display_records = []
+            for i, record in enumerate(manager.get_all()):
+                if i % 2 == 0:
+                    display_records.append(SimpleDisplayRecord(record))
+                else:
+                    display_records.append(VerboseDisplayRecord(record))
+            for dr in display_records:
+                print(dr.display())
         elif choice == "0":
             break
         else:
